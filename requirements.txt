@@ -4,11 +4,11 @@ pygame==2.5.2
 # Math dependencies
 numpy==1.26.4
 matplotlib==3.8.3
-pillow==10.2.0
+pillow==12.2.0
 
 # Test dependencies
 pytest>=8.0.0
 
 # Utilities dependencies
-nltk==3.8.1
-requests==2.31.0
+nltk==3.9.4
+requests==2.33.0
