@@ -1602,16 +1602,46 @@ if (progressBar) {
     ticking = false;
   }
 
-  window.addEventListener(
-    "scroll",
-    function () {
+    window.addEventListener("scroll", () => {
       if (!ticking) {
         requestAnimationFrame(updateScrollProgress);
         ticking = true;
       }
-    },
-    { passive: true }
-  );
+    });
+  }
 
-  updateScrollProgress();
-}
+  // URL parameters auto-open logic
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    const projectParam = params.get("project");
+    if (projectParam) {
+      const match = projectCards.find(
+        (c) => c.getAttribute("data-project") === projectParam
+      );
+      if (match) {
+        setTimeout(() => {
+          openProjectSafe(projectParam, match);
+          match.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 300);
+      }
+    }
+    const catParam = params.get("category");
+    const valid = [
+      "all",
+      "games",
+      "math",
+      "utilities",
+      "playground",
+      "favorites",
+    ];
+    if (catParam && valid.includes(catParam)) {
+      const tab = document.querySelector(`[data-category="${catParam}"]`);
+      if (tab) {
+        setTimeout(() => tab.click(), 100);
+      }
+    }
+  })();
+
+  // Initial card filtering state update
+  updateProjectVisibility(currentCategory, currentSearchQuery);
+});
