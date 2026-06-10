@@ -19,7 +19,8 @@ function getProjectHTML(projectName) {
         'coordinate-polar-transform': getCoordinatePolarTransformHTML(),
         'derivative-calculator': getDerivativeCalculatorHTML(),
         'morse-code': getMorseCodeHTML(),
-        'tower-of-hanoi': getTowerOfHanoiHTML()
+        'tower-of-hanoi': getTowerOfHanoiHTML(),
+        'nqueens' : getNQueensHTML()
     };
     
     return projects[projectName] || '<h2>Project Coming Soon!</h2>';
@@ -44,7 +45,8 @@ function initializeProject(projectName) {
         'coordinate-polar-transform': initCoordinatePolarTransform,
         'derivative-calculator': initDerivativeCalculator,
         'morse-code': initMorseCode,
-        'tower-of-hanoi': initTowerOfHanoi
+        'tower-of-hanoi': initTowerOfHanoi,
+        'nqueens' : initNQueens()
     };
     
     if (initializers[projectName]) {
@@ -3307,6 +3309,122 @@ function initTowerOfHanoi() {
     diskCountInput.addEventListener('change', initTowers);
     
     initTowers();
+}
+//N-Queens
+function getNQueensHTML() {
+    return `
+        <div class="project-content">
+            <h2>👑 N-Queens Problem Solver</h2>
+            <div class="nqueens-container">
+                <div class="controls">
+                    <label>
+                        Board Size (N):
+                        <input type="number" id="nValue" min="4" max="12" value="4">
+                    </label>
+                    <button class="btn-solve" id="solveNQueensBtn">🎯 Solve</button>
+                    <button class="btn-reset" id="resetNQueens">Reset</button>
+                </div>
+                
+                <div class="stats">
+                    <div>Total Solutions: <span id="solutionCount">0</span></div>
+                </div>
+                
+                <div id="nQueensOutput" class="solutions"></div>
+            </div>
+        </div>
+        
+        <style>
+            .nqueens-container {
+                padding: 2rem;
+                text-align: center;
+            }
+            .controls {
+                display: flex;
+                gap: 1rem;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 1rem;
+                flex-wrap: wrap;
+            }
+            .controls input {
+                width: 80px;
+                padding: 0.5rem;
+                font-size: 1rem;
+                border: 2px solid var(--border-color);
+                border-radius: 8px;
+                background: var(--bg-color);
+                color: var(--text-color);
+                text-align: center;
+            }
+            .solutions {
+                margin-top: 1rem;
+                font-family: monospace;
+                white-space: pre;
+                text-align: left;
+            }
+            .btn-solve {
+                background: var(--success-color);
+                color: white;
+                border: none;
+                padding: 0.75rem 2rem;
+                border-radius: 50px;
+                cursor: pointer;
+                font-size: 1rem;
+                transition: var(--transition);
+            }
+            .btn-solve:hover {
+                transform: scale(1.05);
+            }
+        </style>
+    `;
+}
+function isSafe(board, row, col, n) {
+    for (let i = 0; i < row; i++) if (board[i][col]) return false;
+    for (let i=row, j=col; i>=0 && j>=0; i--, j--) if (board[i][j]) return false;
+    for (let i=row, j=col; i>=0 && j<n; i--, j++) if (board[i][j]) return false;
+    return true;
+}
+
+function solveNQueens(board, row, n, solutions) {
+    if (row === n) {
+        solutions.push(board.map(r => [...r]));
+        return;
+    }
+    for (let col = 0; col < n; col++) {
+        if (isSafe(board, row, col, n)) {
+            board[row][col] = 1;
+            solveNQueens(board, row+1, n, solutions);
+            board[row][col] = 0;
+        }
+    }
+}
+
+function initNQueens() {
+    const solveBtn = document.getElementById('solveNQueensBtn');
+    const resetBtn = document.getElementById('resetNQueens');
+    const output = document.getElementById('nQueensOutput');
+    const solutionCountEl = document.getElementById('solutionCount');
+    const nInput = document.getElementById('nValue');
+
+    function runSolver() {
+        let n = parseInt(nInput.value) || 4;
+        let board = Array.from({length:n}, () => Array(n).fill(0));
+        let solutions = [];
+        solveNQueens(board, 0, n, solutions);
+
+        solutionCountEl.textContent = solutions.length;
+        output.innerHTML = "";
+        solutions.forEach(sol => {
+            let grid = sol.map(row => row.map(cell => cell ? "♛" : "⬜").join(" ")).join("<br>");
+            output.innerHTML += `<pre>${grid}</pre><br>`;
+        });
+    }
+
+    solveBtn.addEventListener('click', runSolver);
+    resetBtn.addEventListener('click', () => {
+        output.innerHTML = "";
+        solutionCountEl.textContent = "0";
+    });
 }
 
 function getProjectileMotionHTML() {
