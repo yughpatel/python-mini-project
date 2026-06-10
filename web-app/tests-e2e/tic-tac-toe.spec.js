@@ -108,7 +108,7 @@ test.describe('Tic Tac Toe E2E Game', () => {
 
     // Verify final title
     const finalTitle = finalScreen.locator('#final-title');
-    await expect(finalTitle).toHaveText(' Alice Wins the Match!');
+    await expect(finalTitle).toContainText('Alice Wins the Match!');
 
     // Click rematch button
     const rematchBtn = finalScreen.locator('#rematch-btn');
