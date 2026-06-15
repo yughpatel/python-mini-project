@@ -34,11 +34,14 @@
     />
   </head>
   <body class="sidebar-active">
+    <button aria-label="Switch theme" class="theme-toggle fixed-theme-toggle" type="button">
+      <i class="fas fa-moon" aria-hidden="true"></i>
+    </button>
     <!-- Scroll Progress Bar -->
     <div id="scrollProgressContainer" aria-label="Page scroll progress">
       <div id="scrollProgressBar"></div>
     </div>
-
+    
     <a class="skip-link" href="#main-content">Skip to main content</a>
 
     <!-- Cursor Glow -->
@@ -862,6 +865,7 @@
     <script defer src="js/projects/resume-analyzer.js"></script>
     <script src="js/projects/caesar-cipher.js"></script>
     <script src="js/projects/matrix-calculator.js"></script>
+    <script src="js/projects/reverse-hangman.js"></script>
     <script defer src="js/projects/unit-converter.js"></script>
     <script defer src="js/projects.js"></script>
     <script defer src="js/cm-editor.js"></script>
@@ -1064,6 +1068,13 @@
             category: "math",
             desc: "Add, subtract, multiply, transpose, determinant, rank, inverse",
             tags: "math,matrix,algebra,calculator",
+          },
+          {
+            project: "reverse-hangman",
+            title: "Reverse Hangman",
+            category: "games",
+            desc: "Computer tries to guess your secret word using AI logic",
+            tags: "game,hangman,ai,word,guessing",
           },
           {
             project: "coordinate-polar-transform",
@@ -1318,10 +1329,10 @@
             const icon = toggle.querySelector("i");
             if (icon) {
               if (theme === "dark") {
-                icon.className = "fas fa-sun";
+                icon.className = "fas fa-moon";
                 toggle.setAttribute("aria-label", "Switch to light mode");
               } else {
-                icon.className = "fas fa-moon";
+                icon.className = "fas fa-sun";
                 toggle.setAttribute("aria-label", "Switch to dark mode");
               }
             }
@@ -1355,11 +1366,7 @@
 
         // Add click listeners to all theme toggles
         themeToggles.forEach((toggle) => {
-          // Remove any existing listeners
-          const newToggle = toggle.cloneNode(true);
-          toggle.parentNode.replaceChild(newToggle, toggle);
-
-          newToggle.addEventListener("click", function (e) {
+          toggle.addEventListener("click", function (e) {
             e.preventDefault();
             const current = html.getAttribute("data-theme");
             const next = current === "light" ? "dark" : "light";
@@ -1504,6 +1511,34 @@
         console.log('✅ Modal fix loaded');
       })();
     </script>
+    
+    <script>
+      // FIX 1: Add missing toPascalCase function
+      if (typeof window.toPascalCase !== 'function') {
+        window.toPascalCase = function(str) {
+          return str.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
+        };
+        console.log('✅ toPascalCase function added');
+      }
+
+      // FIX 2: Fix modal focus error
+      setTimeout(function() {
+      const modal = document.getElementById('projectModal');
+      if (modal) {
+        // Remove any broken focus code
+        modal.removeAttribute('tabindex');
+      }
+    
+      // Fix any focus-related errors
+      const activeElement = document.activeElement;
+      if (!activeElement || activeElement === document.body) {
+        document.body.setAttribute('tabindex', '-1');
+        document.body.style.outline = 'none';
+      }
+    
+      console.log('✅ Focus error fixed');
+    }, 100);
+  </script>
 
     <!-- Info Modal Popup -->
     <div id="infoModalOverlay" class="info-modal-overlay">
